@@ -2,7 +2,7 @@
 
 import pygame
 import random
-# from blob import Blob
+import Blob
 
 
 STARTING_BLUE_BLOBS = 10
@@ -18,29 +18,16 @@ game_display = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Blob World")
 clock = pygame.time.Clock()
 
-class Blob:
+class BlueBlob(Blob):
+  def __init__(self, color, x_boundary, y_boundary):
+    #Blob().__init__(self, color, x_boundary, y_boundary)
+    super().__init__(color, x_boundary, y_boundary)
+    self.color = BLUE
+  
+  def move_fast(self):
+    self.x += random.randrange(-7,7)
+    self.y += random.randrange(-7,7)
 
-    def __init__(self, color, x_boundary, y_boundary, size_range=(4,8), movement_range=(-1,2)):
-        self.size = random.randrange(size_range[0],size_range[1])
-        self.color = color
-        self.x_boundary = x_boundary
-        self.y_boundary = y_boundary
-        self.x = random.randrange(0, self.x_boundary)
-        self.y = random.randrange(0, self.y_boundary)
-        self.movement_range = movement_range
-
-    def move(self):
-        self.move_x = random.randrange(self.movement_range[0],self.movement_range[1])
-        self.move_y = random.randrange(self.movement_range[0],self.movement_range[1])
-        self.x += self.move_x
-        self.y += self.move_y
-
-    def check_bounds(self):
-        if self.x < 0: self.x = 0
-        elif self.x > self.x_boundary: self.x = self.x_boundary
-        
-        if self.y < 0: self.y = 0
-        elif self.y > self.y_boundary: self.y = self.y_boundary
 
 
 def draw_environment(blob_list):
@@ -50,16 +37,16 @@ def draw_environment(blob_list):
         for blob_id in blob_dict:
             blob = blob_dict[blob_id]
             pygame.draw.circle(game_display, blob.color, [blob.x, blob.y], blob.size)
-            blob.move()
+            blob.move_fast()
+            blob.check_bounds()
 
     pygame.display.update()
     
 
 def main():
   #
-    blue_blobs = dict(enumerate([Blob(BLUE,WIDTH,HEIGHT) for i in range(STARTING_BLUE_BLOBS)]))
-    red_blobs = dict(enumerate([Blob(RED,WIDTH,HEIGHT) for i in range(STARTING_RED_BLOBS)]))
-    while True:
+    blue_blobs = dict(enumerate([BlueBlob(BLUE,WIDTH,HEIGHT) for i in range(STARTING_BLUE_BLOBS)]))
+    red_blobs = dict(enumerate([BlueBlob(RED,WIDTH,HEIGHT) for i in range(STARTING_RED_BLOBS)]))
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
